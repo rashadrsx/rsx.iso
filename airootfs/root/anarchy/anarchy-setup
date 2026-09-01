@@ -78,8 +78,11 @@ install_pacman_packages() {
         power-profiles-daemon wine qbittorrent nautilus
         ripgrep flameshot dunst
         tesseract tesseract-data-ara tesseract-data-eng
-        lazygit rofi
+        lazygit rofi 
         base-devel git
+        fzf zoxide fastfetch
+        rsync
+        docker docker-compose
     )
 
     pacman -S --needed --noconfirm "${pacman_pkgs[@]}"
@@ -114,6 +117,7 @@ install_aur_packages() {
         heroic-games-launcher-bin
         brave-bin
         yazi
+        greenclip
     )
 
     sudo -u "$TARGET_USER" yay -S --needed --noconfirm "${aur_pkgs[@]}"
@@ -123,6 +127,7 @@ deploy_dotfiles() {
     log "Deploying dotfiles to $TARGET_HOME..."
 
     local config_dir="$TARGET_HOME/.config"
+    local project_dir="$TARGET_HOME/Projects"
     local local_bin="$TARGET_HOME/.local/bin"
 
     mkdir -p "$config_dir" "$local_bin"
@@ -138,7 +143,7 @@ deploy_dotfiles() {
     [ -d "$DOTFILES_SRC/fastfetch" ] && cp -rf "$DOTFILES_SRC/fastfetch" "$config_dir/"
     [ -d "$DOTFILES_SRC/lsd" ]       && cp -rf "$DOTFILES_SRC/lsd" "$config_dir/"
     [ -d "$DOTFILES_SRC/yazi" ]      && cp -rf "$DOTFILES_SRC/yazi" "$config_dir/"
-    [ -d "$DOTFILES_SRC/docker" ]    && cp -rf "$DOTFILES_SRC/docker" "$config_dir/"
+    [ -d "$DOTFILES_SRC/docker" ]    && cp -rf "$DOTFILES_SRC/docker" "$project_dir/"
 
     if [ -d "$DOTFILES_SRC/bin" ]; then
         cp -rf "$DOTFILES_SRC/bin/"* "$local_bin/"
