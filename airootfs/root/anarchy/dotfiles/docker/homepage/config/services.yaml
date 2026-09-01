@@ -1,0 +1,19 @@
+- Media & Files:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: http://localhost:8096
+        container: jellyfin
+    - Audiobookshelf:
+        icon: audiobookshelf.png
+        href: http://localhost:13378
+        container: audiobookshelf
+
+- System & Tools:
+    - Syncthing:
+        icon: syncthing.png
+        href: http://localhost:8384
+        description: Native System Service
+    - llama.cpp:
+        icon: sh-llama-cpp
+        href: http://localhost:8080
+        description: AI Client

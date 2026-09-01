@@ -1,0 +1,42 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/bookmarks
+
+- Developer:
+    - Github:
+        - abbr: GH
+          href: https://github.com/
+    - Gemini:
+        - abbr: GE
+          href: https://gemini.google.com/
+    - Claude:
+        - abbr: CL
+          href: https://claude.ai/
+    - kimi:
+        - abbr: KI
+          href: https://kimi.com/
+
+- Social:
+    - X:
+        - abbr: X
+          href: https://x.com/
+    - WhatsApp:
+        - abbr: WA
+          href: https://web.whatsapp.com/
+    - Reddit:
+        - abbr: RE
+          href: https://reddit.com/
+    - Google Photos:
+        - abbr: GP
+          href: https://photos.google.com/
+
+- Entertainment:
+    - YouTube:
+        - abbr: YT
+          href: https://youtube.com/
+    - TvCharts:
+        - abbr: TV
+          href: https://tvcharts.co/
+    - Instagram:
+        - abbr: IN
+          href: https://instagram.com/

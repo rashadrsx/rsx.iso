@@ -127,3 +127,6 @@ xdg-utils
 xfsprogs
 xl2tpd
 zsh
+base-devel
+git
+networkmanager

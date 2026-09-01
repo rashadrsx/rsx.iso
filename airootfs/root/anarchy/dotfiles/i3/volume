@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Get the current volume and mute status (from Master)
+VOLUME=$(amixer sget Master | grep -oP '\d+%' | head -n 1)
+MUTED=$(amixer sget Master | grep -oP '\[off\]')
+
+# Output the formatted volume status
+if [ "$MUTED" ]; then
+    echo "♪: muted"
+else
+    echo "♪: $VOLUME"
+fi

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+wall=$(find ~/Pictures/background/good_stuff  -type f -name "*.jpg" -o -name "*.png" | shuf -n 1)
+feh --bg-scale $wall
+# genrate the color scheme
+
+wal -c
+wal -i $wall
+
+#xdotool key super+F5
+#clear
+echo "Rashad Alsharpini" | figlet | lolcat

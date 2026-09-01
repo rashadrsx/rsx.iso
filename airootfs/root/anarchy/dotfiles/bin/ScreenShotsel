@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Define the directory and filename for the screenshot
+SAVE_DIR="$HOME/Pictures/Screenshots"
+FILENAME="screenshot_$(date +%Y%m%d_%H%M%S).png"
+
+# Create the directory if it doesn't exist
+mkdir -p "$SAVE_DIR"
+
+# Take the screenshot and save it to the specified location
+maim -s "$SAVE_DIR/$FILENAME"
+
+# Copy the screenshot to the clipboard
+xclip -selection clipboard -t image/png -i "$SAVE_DIR/$FILENAME"
+
+# Send a notification
+notify-send "Screenshot saved to $SAVE_DIR/$FILENAME and copied to clipboard"
+

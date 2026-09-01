@@ -1,0 +1,17 @@
+#bin/
+#brave "https://www.youtube.com/watch?v=j4xVBmgLCvs&list=TLPQMTMwMTIwMjSeLmChBIS3_g&index=3" j
+notify-send "اتقي الله"
+notify-send "    "
+notify-send "    "
+notify-send "    "
+notify-send "    "
+notify-send "    "
+notify-send "    "
+notify-send "    "
+notify-send "    "
+notify-send "    "
+notify-send "    "
+notify-send "    "
+
+notify-send "                                                         اللهم أنت ربي لا إله إلا أنت خلقتني وأنا عبدك وأنا على عهدك ووعدك ما استطعت أعوذ بك من شر ما صنعت أبوء لك بنعمتك علي وأبوء لك بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت."
+mpv ~/Desktop/فما\ ظنكم\ برب\ العالمين\ _\ حين\ بكى\ المهندس\ أيمن\ عبد\ الرحيم.mp4 

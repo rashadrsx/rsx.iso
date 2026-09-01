@@ -1,0 +1,23 @@
+#!/bin/bash
+
+current_profile=$(powerprofilesctl | awk '/\*/ {gsub(":", "", $2); print $2}')
+
+# Set icons for each mode
+case "$current_profile" in
+  performance)
+    icon="🚀"
+    ;;
+  balanced)
+    icon="⚖️"
+    ;;
+  power-saver)
+    icon="🔋"
+    ;;
+  *)
+    icon="❓"
+    current_profile="unknown"
+    ;;
+esac
+
+# Print the icon and current profile
+echo "$icon $current_profile"

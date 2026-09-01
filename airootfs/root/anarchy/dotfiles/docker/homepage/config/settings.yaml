@@ -1,0 +1,6 @@
+---
+providers:
+  openweathermap: openweathermapapikey
+  weatherapi: weatherapiapikey
+
+target: _self

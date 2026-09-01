@@ -1,0 +1,9 @@
+#!/bin/bash
+# Path to your wallpapers folder
+WALLPAPER_DIR=~/Pictures/lockscreen/
+
+# Randomly select a wallpaper
+WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
+
+# Update Betterlockscreen with the selected wallpaper
+betterlockscreen -u "$WALLPAPER"

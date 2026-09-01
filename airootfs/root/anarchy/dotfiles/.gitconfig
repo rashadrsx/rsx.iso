@@ -1,0 +1,9 @@
+[user]
+	email = rashadalsharpini@gmail.com
+	name = rashad
+
+[alias]
+	st = status
+	cm = commit -m
+	a = add --all
+	l = log

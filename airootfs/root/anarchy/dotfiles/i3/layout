@@ -1,0 +1,12 @@
+#!/bin/bash
+# Check the LED mask to determine the active keyboard layout
+# 00000000 is US, 00001000 is ARA (5th character is 1 when second layout is active)
+
+MASK=$(xset -q | awk '/LED/ {print $10}')
+
+# If the 5th character of the mask is 1, the second layout (ARA) is active
+if [[ $MASK =~ ^.{4}1 ]]; then
+    echo "AR"
+else
+    echo "US"
+fi

@@ -1,0 +1,7 @@
+[[plugin.deps]]
+use = "WayneKent/rsync-paste"
+rev = "d9750b2"
+hash = "42ff4993ed9425a579b59e8987747934"
+
+[flavor]
+deps = []

@@ -1,0 +1,13 @@
+#!/bin/bash
+file=$1
+
+if [[ $file == *.cpp ]]
+then
+    g++ "$file" -o main
+    ./main
+    rm main
+elif [[ $file == *.py ]]
+then
+    python "$file"
+fi
+

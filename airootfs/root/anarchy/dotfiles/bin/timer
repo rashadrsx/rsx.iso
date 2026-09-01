@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Default value
+DEFAULT_MINUTES=25
+
+# If $1 is provided, use it; otherwise, use the default value
+minutes=${1:-$DEFAULT_MINUTES}
+
+# Path to sound files
+START_SOUND=~/Music/sound/start.wav
+END_SOUND=~/Music/sound/end.wav
+
+# Send notification that the timer has started
+notify-send "You started a timer for $minutes minute(s)"
+
+# Play start sound
+if [ -f "$START_SOUND" ]; then
+  aplay "$START_SOUND"
+fi
+
+seconds=$((minutes * 60))
+
+(
+  while [ $seconds -gt 0 ]; do
+    mins=$((seconds / 60))
+    secs=$((seconds % 60))
+    printf "\r %02d:%02d " $mins $secs >&2
+    echo "# $(printf "%02d:%02d" $mins $secs)"
+    echo $(( (minutes * 60 - seconds) * 100 / (minutes * 60) ))
+    sleep 1
+    : $((seconds--))
+  done
+  printf "\r 00:00 \n" >&2
+) |
+zenity --progress \
+  --text="" \
+  --percentage=0 \
+  --auto-close \
+  --no-cancel \
+  --no-markup \
+  --title="Timer" \
+  --width=80 \
+  --height=70
+
+# Send notification that the timer is up
+notify-send "Time's up"
+
+# Play end sound
+if [ -f "$END_SOUND" ]; then
+  aplay "$END_SOUND"
+fi
+
+echo -e "\nTime's up!"
+

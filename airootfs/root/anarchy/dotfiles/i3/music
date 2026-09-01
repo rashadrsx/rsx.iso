@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Handle clicks
+case $BLOCK_BUTTON in
+    1) playerctl -p io.bassi.Amberol play-pause ;;
+    2) playerctl -p io.bassi.Amberol stop ;;
+    3) playerctl -p io.bassi.Amberol next ;;
+    4) playerctl -p io.bassi.Amberol previous ;;
+    5) playerctl -p io.bassi.Amberol next ;;
+esac
+
+# Metadata
+artist=$(playerctl -p io.bassi.Amberol metadata artist 2>/dev/null)
+title=$(playerctl -p io.bassi.Amberol metadata title 2>/dev/null)
+length=$(playerctl -p io.bassi.Amberol metadata mpris:length 2>/dev/null)
+position=$(playerctl -p io.bassi.Amberol position 2>/dev/null)
+status=$(playerctl -p io.bassi.Amberol status 2>/dev/null)
+
+# Time formatter
+format_time() {
+    local total_sec=$(( $1 / 1000000 ))
+    local min=$(( total_sec / 60 ))
+    local sec=$(( total_sec % 60 ))
+    printf "%02d:%02d" "$min" "$sec"
+}
+
+# Icons
+icon="⏸️"
+[ "$status" = "Playing" ] && icon="▶️"
+
+# Output
+if [ -z "$artist" ] && [ -z "$title" ]; then
+    echo "🎵 No music"
+else
+    current=$(format_time "$position")
+    total=$(format_time "$length")
+    echo "$icon $artist - $title[$current$total]"
+fi

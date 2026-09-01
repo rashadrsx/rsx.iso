@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Check if gnome-pomodoro is running
+if ! pgrep -x "gnome-pomodoro" >/dev/null; then
+    echo "🍅 OFF"
+    exit 0
+fi
+
+get_prop() {
+    gdbus call --session \
+        --dest org.gnome.Pomodoro \
+        --object-path /org/gnome/Pomodoro \
+        --method org.freedesktop.DBus.Properties.Get \
+        org.gnome.Pomodoro "$1" 2>/dev/null | cut -d"'" -f2
+}
+
+get_float_prop() {
+    gdbus call --session \
+        --dest org.gnome.Pomodoro \
+        --object-path /org/gnome/Pomodoro \
+        --method org.freedesktop.DBus.Properties.Get \
+        org.gnome.Pomodoro "$1" 2>/dev/null | grep -oP "[0-9]+\.[0-9]+" | cut -d. -f1
+}
+
+state=$(get_prop State)
+elapsed=$(get_float_prop Elapsed)
+duration=$(get_float_prop StateDuration)
+
+if [ -z "$state" ] || [ -z "$duration" ]; then
+    echo "🍅 OFF"
+    exit 0
+fi
+
+remaining=$((duration - elapsed))
+if (( remaining < 0 )); then
+    remaining=0
+fi
+
+minutes=$((remaining / 60))
+seconds=$((remaining % 60))
+
+case "$state" in
+  pomodoro)
+    icon="🍅"
+    ;;
+  short-break)
+    icon="☕"
+    ;;
+  long-break)
+    icon="🛌"
+    ;;
+  *)
+    icon="⏸️"
+    ;;
+esac
+
+printf "%s %02d:%02d\n" "$icon" "$minutes" "$seconds"

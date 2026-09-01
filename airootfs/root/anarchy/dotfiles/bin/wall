@@ -1,0 +1,10 @@
+#!/bin/sh
+
+wall=$(find ~/Pictures/background/good_stuff  -type f -name "*.jpg" -o -name "*.png" | shuf -n 1)
+#wall=$(find ~/Pictures/Arcane/ -type f -name "*.jpg" -o -name "*.png" | shuf -n 1)
+feh --bg-scale $wall
+notify-send "wall"
+
+#wal -c
+#wal -i ~/Pictures/background/good_stuff/028.jpg
+#wal -i ~/Pictures/background/good_stuff/049.jpg

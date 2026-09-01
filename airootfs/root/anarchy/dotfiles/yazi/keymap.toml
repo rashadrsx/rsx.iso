@@ -1,0 +1,4 @@
+[[mgr.prepend_keymap]]
+on  = "p"
+run = "plugin rsync-paste"
+desc = "Paste with rsync"

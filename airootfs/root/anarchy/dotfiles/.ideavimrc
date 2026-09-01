@@ -1,0 +1,44 @@
+nnoremap h h
+nnoremap l l
+vnoremap h h
+vnoremap l l
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-b> <Home>
+inoremap <C-e> <End>
+set whichwrap-=h,l  " Prevent wrapping at line boundaries
+" Move left with wrap to previous line
+nnoremap <expr> h col('.') == 1 ? 'k$' : 'h'
+vnoremap <expr> h col('.') == 1 ? 'k$' : 'h'
+" Move right with wrap to next line
+nnoremap <expr> l col('.') > col('$') - 1 ? 'j0' : 'l'
+vnoremap <expr> l col('.') > col('$') - 1 ? 'j0' : 'l'
+
+" clip
+nnoremap y "+y
+vnoremap y "+y
+nnoremap yy "+yy
+nnoremap p "+p
+nnoremap d "+d
+vnoremap d "+d
+nnoremap dd "+dd
+
+" gd → Go to Definition (common Vim usage)
+nnoremap gd :action GotoDefinition<CR>
+
+" gD → Go to Declaration (broader symbol declaration)
+nnoremap gD :action GotoDeclaration<CR>
+
+" gi → Go to Implementation (OOP style jump to concrete class/function)
+nnoremap gi :action GotoImplementation<CR>
+
+set ignorecase       " ignore case when searching
+set smartcase        " but if you use uppercase letters, match case
+" Set leader key to space
+let mapleader = " "
+
+" Use <leader>/ to toggle line comment
+nmap <leader>/ :action CommentByLineComment<CR>
+vmap <leader>/ :action CommentByLineComment<CR>
