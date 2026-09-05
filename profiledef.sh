@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
-iso_name="anarchy"
-iso_label="ANARCHY_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
-iso_publisher="Anarchy Linux"
-iso_application="Anarchy Linux Install Medium"
+iso_name="rsx"
+iso_label="RSX_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
+iso_publisher="RSX Linux"
+iso_application="RSX Linux Install Medium"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
@@ -22,6 +22,6 @@ file_permissions=(
   ["/usr/local/bin/choose-mirror"]="0:0:755"
   ["/usr/local/bin/Installation_guide"]="0:0:755"
   ["/usr/local/bin/livecd-sound"]="0:0:755"
-  ["/root/anarchy/anarchy-setup"]="0:0:755"
-  ["/root/anarchy/anarchy-deploy"]="0:0:755"
+  ["/root/rsx/rsx-setup"]="0:0:755"
+  ["/root/rsx/rsx-deploy"]="0:0:755"
 )

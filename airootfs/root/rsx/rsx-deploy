@@ -12,14 +12,14 @@ warn() { echo -e "${YELLOW}[!]${NC} $1"; }
 err() { echo -e "${RED}[-]${NC} $1"; }
 
 echo -e "${CYAN}"
-echo "    ___                           __          "
-echo "   /   |  ____  ____ ___________/ /_  __  __ "
-echo "  / /| | / __ \/ __ \`/ ___/ ___/ __ \/ / / / "
-echo " / ___ |/ / / / /_/ / /  / /__/ / / / /_/ /  "
-echo "/_/  |_/_/ /_/\__,_/_/   \___/_/ /_/\__, /   "
-echo "                                   /____/    "
+echo "  ____  ______  __"
+echo " / __ \/ ___/ |/ /"
+echo "/ /_/ /\__ \|   / "
+echo "/ _, _/___/ /   | "
+echo "/_/ |_|/____/_/|_|"
+echo ""
 echo -e "${NC}"
-echo -e "${GREEN}Anarchy Deploy — copies setup files into your installed system${NC}"
+echo -e "${GREEN}RSX Deploy — copies setup files into your installed system${NC}"
 echo ""
 
 MOUNT_POINT="/mnt"
@@ -29,19 +29,19 @@ if ! mountpoint -q "$MOUNT_POINT" 2>/dev/null; then
     err "If you used archinstall, type 'exit' first to leave chroot, then run this."
     echo ""
     echo "If your install is mounted elsewhere, run:"
-    echo "  MOUNT_POINT=/your/mount anarchy-deploy"
+    echo "  MOUNT_POINT=/your/mount rsx-deploy"
     exit 1
 fi
 
-log "Copying anarchy setup files to $MOUNT_POINT/root/anarchy..."
-cp -rf /root/anarchy "$MOUNT_POINT/root/"
+log "Copying rsx setup files to $MOUNT_POINT/root/rsx..."
+cp -rf /root/rsx "$MOUNT_POINT/root/"
 
 log "Entering your installed system (arch-chroot)..."
 echo ""
-echo -e "${CYAN}Running anarchy-setup inside your new system...${NC}"
+echo -e "${CYAN}Running rsx-setup inside your new system...${NC}"
 echo ""
 
-arch-chroot "$MOUNT_POINT" /root/anarchy/anarchy-setup
+arch-chroot "$MOUNT_POINT" /root/rsx/rsx-setup
 
 echo ""
 log "All done! You can now reboot into your new system:"

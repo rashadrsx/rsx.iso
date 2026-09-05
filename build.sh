@@ -15,7 +15,7 @@ echo "Cleaning previous build..."
 rm -rf "$WORK_DIR" "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
-echo "Building Anarchy ISO..."
+echo "Building RSX ISO..."
 mkarchiso -v -w "$WORK_DIR" -o "$OUTPUT_DIR" "$SCRIPT_DIR"
 
 echo ""

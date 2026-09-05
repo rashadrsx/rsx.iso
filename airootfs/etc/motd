@@ -1,14 +1,13 @@
 
-    [38;2;23;147;209m___                           __         [0m
-   [38;2;23;147;209m/   |  ____  ____ ___________/ /_  __  __[0m
-  [38;2;23;147;209m/ /| | / __ \/ __ `/ ___/ ___/ __ \/ / / /[0m
- [38;2;23;147;209m/ ___ |/ / / / /_/ / /  / /__/ / / / /_/ / [0m
-[38;2;23;147;209m/_/  |_/_/ /_/\__,_/_/   \___/_/ /_/\__, /  [0m
-                                   [38;2;23;147;209m/____/   [0m
+  [38;2;23;147;209m ____  ______  __[0m
+  [38;2;23;147;209m/ __ \/ ___/ |/ /[0m
+  [38;2;23;147;209m/ /_/ /\__ \|   / [0m
+  [38;2;23;147;209m/ _, _/___/ /   | [0m
+  [38;2;23;147;209m/_/ |_|/____/_/|_|[0m
 
 [35mStep 1:[0m Install Arch using [35marchinstall[0m (or manually)
 [35mStep 2:[0m When archinstall asks "chroot into installation?" say [35mNO[0m
-[35mStep 3:[0m Run [35m/root/anarchy/anarchy-deploy[0m
+[35mStep 3:[0m Run [35m/root/rsx/rsx-deploy[0m
 
 That's it! It copies your configs + programs into the installed system automatically.
 
