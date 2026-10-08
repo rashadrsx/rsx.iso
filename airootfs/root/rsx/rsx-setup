@@ -78,11 +78,12 @@ install_pacman_packages() {
         power-profiles-daemon wine qbittorrent nautilus
         ripgrep flameshot dunst
         tesseract tesseract-data-ara tesseract-data-eng
-        lazygit rofi 
+        lazygit rofi lazydocker
         base-devel git
         fzf zoxide fastfetch
-        rsync
-        docker docker-compose
+        rsync playerctl amberol
+        docker docker-compose xorg-xset
+        brightnessctl autotiling
     )
 
     pacman -S --needed --noconfirm "${pacman_pkgs[@]}"
@@ -113,7 +114,6 @@ install_aur_packages() {
         obsidian
         silicon
         notify
-        lazydocker
         heroic-games-launcher-bin
         brave-bin
         yazi
