@@ -15,5 +15,5 @@
         description: Native System Service
     - llama.cpp:
         icon: sh-llama-cpp
-        href: http://192.168.1.21:8080
+        href: http://localhost:8080
         description: AI Client
