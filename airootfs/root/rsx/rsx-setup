@@ -85,9 +85,48 @@ install_pacman_packages() {
         rsync playerctl amberol
         docker docker-compose xorg-xset
         brightnessctl autotiling
+        # i3 / X11 helpers
+        picom feh maim autorandr wmctrl xdotool xorg-xinput libinput-tools
+        # audio
+        pipewire-alsa pipewire-pulse pulsemixer pavucontrol
+        # fonts
+        noto-fonts noto-fonts-extra ttf-noto-nerd ttf-jetbrains-mono-nerd
+        ttf-dejavu ttf-liberation ttf-opensans
+        # filesystems / system
+        ntfs-3g ntfsprogs reflector linux-headers
+        # apps / tools
+        tmux steam authenticator scrcpy android-tools android-udev
+        gnome-shell-extension-caffeine
+        # dev / iso building
+        cmake archiso python-pyparted
+        pciutils
     )
 
+    # These conflict with packages archinstall ships by default and pacman
+    # won't swap them under --noconfirm, so drop the old ones first.
+    if pacman -Qq pulseaudio &>/dev/null; then
+        log "Replacing pulseaudio with pipewire-pulse..."
+        pacman -Rdd --noconfirm pulseaudio pulseaudio-bluetooth 2>/dev/null \
+            || pacman -Rdd --noconfirm pulseaudio
+    fi
+
     pacman -S --needed --noconfirm "${pacman_pkgs[@]}"
+}
+
+install_hardware_packages() {
+    if lspci | grep -qi 'nvidia'; then
+        log "NVIDIA GPU detected, installing drivers + CUDA..."
+        pacman -S --needed --noconfirm \
+            nvidia-open-dkms nvidia-utils lib32-nvidia-utils nvidia-settings \
+            nvidia-container-toolkit cuda cudnn
+    fi
+
+    if grep -qi 'asus' /sys/class/dmi/id/sys_vendor 2>/dev/null; then
+        log "ASUS hardware detected, installing asusctl..."
+        pacman -S --needed --noconfirm asusctl rog-control-center
+        sudo -u "$TARGET_USER" yay -S --needed --noconfirm supergfxctl
+        systemctl enable supergfxd.service 2>/dev/null || true
+    fi
 }
 
 install_yay() {
@@ -119,7 +158,21 @@ install_aur_packages() {
         brave-bin
         yazi
         greenclip
+        betterlockscreen
+        libinput-gestures
+        localsend-bin
+        ventoy-bin
+        ttf-google-sans
+        caffeinated
+        gdm-tools
+        gdm-settings
     )
+
+    # betterlockscreen pulls i3lock-color, which conflicts with i3lock
+    if pacman -Qq i3lock &>/dev/null && ! pacman -Qq i3lock-color &>/dev/null; then
+        log "Removing i3lock (replaced by i3lock-color)..."
+        pacman -Rdd --noconfirm i3lock
+    fi
 
     sudo -u "$TARGET_USER" yay -S --needed --noconfirm "${aur_pkgs[@]}"
 }
@@ -176,6 +229,14 @@ enable_services() {
     log "Enabling systemd services..."
     systemctl enable power-profiles-daemon.service 2>/dev/null || true
     systemctl enable NetworkManager.service 2>/dev/null || true
+    systemctl enable docker.service 2>/dev/null || true
+    systemctl enable bluetooth.service 2>/dev/null || true
+}
+
+setup_user_groups() {
+    # docker: run docker without sudo, input: needed by libinput-gestures
+    log "Adding $TARGET_USER to docker and input groups..."
+    usermod -aG docker,input "$TARGET_USER"
 }
 
 main() {
@@ -198,10 +259,12 @@ main() {
     install_pacman_packages
     install_yay
     install_aur_packages
+    install_hardware_packages
     deploy_dotfiles
     clone_nvim_config
     set_default_shell
     enable_services
+    setup_user_groups
 
     echo ""
     echo -e "${GREEN}============================================${NC}"
