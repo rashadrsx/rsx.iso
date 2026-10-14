@@ -1,0 +1,18 @@
+# RSX dotfiles ignore list
+#
+# Paths inside rsx/dotfiles/ that should NOT be synced into the ISO
+# (runtime data, caches, databases, logs, ...).
+#
+# - Each line starts with a manifest <name>, e.g.  docker/jellyfin/cache/
+# - sync-dotfiles.sh skips these (and removes them from the ISO copy if present)
+# - Lines ending with / are folders: rsx-setup creates them EMPTY on deploy,
+#   owned by the user, so containers running as 1000:1000 can write to them
+#   (otherwise docker creates them as root)
+# - Lines starting with # are ignored.
+
+# --- docker: app data the containers generate themselves ---
+docker/jellyfin/config/
+docker/jellyfin/cache/
+docker/audioBookShelf/config/
+docker/audioBookShelf/metadata/
+docker/homepage/config/logs/
