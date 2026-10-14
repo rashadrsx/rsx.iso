@@ -1,2 +1,4 @@
 work/
 out/
+/airootfs/root/rsx/dotfiles/docker/homepage/.env
+/airootfs/root/rsx/dotfiles/docker/jellyfin/.env
