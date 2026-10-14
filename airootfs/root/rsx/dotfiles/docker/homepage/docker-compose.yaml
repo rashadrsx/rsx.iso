@@ -5,8 +5,9 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - HOMEPAGE_ALLOWED_HOSTS=*
       - HOMEPAGE_MCP_ENABLED=true
-      - HOMEPAGE_MCP_TOKEN=MM7FdfTer/OnLO4/E2Q3WleNa+15oY7/VwLCYbg3W8c=
+      - HOMEPAGE_MCP_TOKEN=${HOMEPAGE_MCP_TOKEN:?create .env with HOMEPAGE_MCP_TOKEN, see .env.example}
       - HOMEPAGE_MCP_ALLOW_WRITE=true
     volumes:
       - ./config:/app/config

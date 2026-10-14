@@ -108,6 +108,35 @@ swap-off() {
         echo "No $SWAPFILE found."
     fi
 }
+
+# Encrypt a folder or file with a password:  enc Backup-codes  ->  Backup-codes.tar.gz.gpg
+enc() {
+    [ -z "$1" ] && { echo "usage: enc <folder|file>"; return 1; }
+    local src="${1%/}"
+    local out="$src.tar.gz.gpg"
+    [ -e "$src" ] || { echo "enc: '$src' not found"; return 1; }
+    [ -e "$out" ] && { echo "enc: '$out' already exists"; return 1; }
+    tar czf - -C "$(dirname "$src")" "$(basename "$src")" | gpg -c -o "$out"
+    if [ "${pipestatus[1]}" -ne 0 ] || [ "${pipestatus[2]}" -ne 0 ]; then
+        rm -f "$out"; echo "enc: failed"; return 1
+    fi
+    echo "encrypted -> $out  (original '$src' kept, delete it with: rm -rf '$src')"
+}
+
+# Decrypt and extract next to the .gpg file:  dec Backup-codes.tar.gz.gpg  ->  Backup-codes/
+dec() {
+    [ -z "$1" ] && { echo "usage: dec <file.tar.gz.gpg>"; return 1; }
+    local src="$1"
+    [ -f "$src" ] || { echo "dec: '$src' not found"; return 1; }
+    local name="$(basename "${src%.tar.gz.gpg}")"
+    local dir="$(dirname "$src")"
+    [ -e "$dir/$name" ] && { echo "dec: '$dir/$name' already exists, not overwriting"; return 1; }
+    gpg -d "$src" | tar xzf - -C "$dir"
+    if [ "${pipestatus[1]}" -ne 0 ] || [ "${pipestatus[2]}" -ne 0 ]; then
+        echo "dec: failed (wrong password?)"; return 1
+    fi
+    echo "decrypted -> $dir/$name"
+}
 export PATH="$HOME/.dotnet/tools:$PATH"
 
 alias ..='cd ..'

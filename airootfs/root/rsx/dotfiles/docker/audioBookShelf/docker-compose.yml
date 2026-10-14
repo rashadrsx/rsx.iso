@@ -6,7 +6,7 @@ services:
       - 13378:80
     volumes:
       # CHANGE THESE PATHS to your actual folders
-      - /home/rashad/Videos/jellyfin/media/books:/audiobooks
+      - /home/rashad/Music/books:/audiobooks
       - ./config:/config
       - ./metadata:/metadata
     environment:

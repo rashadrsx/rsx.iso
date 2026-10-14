@@ -1,0 +1,20 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: 1000:1000
+    network_mode: host # port 8096 (HTTP); also enables DLNA/auto-discovery
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - ~/Videos:/media:ro
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ:-UTC}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
