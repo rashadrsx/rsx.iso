@@ -1,0 +1,30 @@
+# RSX dotfiles manifest
+#
+# Each line:   <live path on your machine>   <name inside rsx/dotfiles/>
+#
+# - sync-dotfiles.sh copies   <live path>  ->  airootfs/root/rsx/dotfiles/<name>
+# - rsx-setup copies          dotfiles/<name>  ->  <live path>  (with ~ = new user's home)
+#
+# Add entries here by hand, or with:  ./sync-dotfiles.sh add ~/.config/btop
+# Lines starting with # are ignored. Paths can't contain spaces.
+
+# --- ~/.config ---
+~/.config/fish              fish
+~/.config/kitty             kitty
+~/.config/lf                lf
+~/.config/mpv               mpv
+~/.config/i3                i3
+~/.config/rofi              rofi
+~/.config/fastfetch         fastfetch
+~/.config/lsd               lsd
+~/.config/yazi              yazi
+
+# --- home ---
+~/.local/bin                bin
+~/.zshrc                    zsh/.zshrc
+~/.gitconfig                .gitconfig
+~/.ideavimrc                .ideavimrc
+~/.tmux.conf                .tmux.conf
+
+# --- other ---
+~/Projects/docker           docker

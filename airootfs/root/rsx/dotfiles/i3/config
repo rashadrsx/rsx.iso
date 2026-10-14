@@ -39,9 +39,18 @@ set $secondMonitor HDMI-1-0
 
 # exec_always --no-startup-id xrandr --output $firstMonitor --mode 1920x1200 --primary --rotate normal --output $secondMonitor --mode 1920x1080 --rotate left --left-of $firstMonitor
 exec_always --no-startup-id xrandr --output $firstMonitor --mode 1920x1200 --primary --rotate normal --output $secondMonitor --mode 1920x1080 --rotate normal --left-of $firstMonitor
-exec_always --no-startup-id xinput set-prop "ASUF1204:00 2808:0202 Touchpad" "libinput Tapping Enabled" 1
+# Tap-to-click now handled persistently by the X server itself:
+#   /etc/X11/xorg.conf.d/50-touchpad.conf
+# (this line was a no-op: xorg-xinput was never installed)
+# exec_always --no-startup-id xinput set-prop "ASUF1204:00 2808:0202 Touchpad" "libinput Tapping Enabled" 1
+# Touchpad gestures. i3 does NOT process ~/.config/autostart (that's only done
+# by DEs which start xdg-desktop-autostart.target), so start it explicitly here.
+# Gesture mappings live in ~/.config/libinput-gestures.conf
+exec --no-startup-id libinput-gestures
+
 # my stuff
-exec --no-startup-id tmux new-session -d "caffeinate sleep infinity"
+# keep the machine from suspending while this runs (Linux replacement for macOS caffeinate)
+exec --no-startup-id tmux new-session -d "systemd-inhibit --what=sleep:idle --mode=block --who=i3 --why='keep awake' sleep infinity"
 exec --no-startup-id ~/.local/bin/getReady.sh
 bindsym $mod+ctrl+l exec --no-startup-id betterlockscreen -l 
 bindsym $mod+ctrl+shift+l exec --no-startup-id betterlockscreen -l & systemctl suspend 
@@ -52,16 +61,19 @@ bindsym Print exec --no-startup-id sh -c 'maim -s | tee ~/Pictures/Screenshots/$
 bindsym Shift+Print exec --no-startup-id ~/.local/bin/ocrToClip.sh
 # bindsym Shift+Print exec --no-startup-id ~/.local/bin/ocr
 bindsym $mod+Tab exec --no-startup-id "rofi -show window -theme ~/.config/rofi/launchers/type-3/style-1.rasi"
-exec --no-startup-id cliphist daemon
+# cliphist is Wayland-only and not installed here - the X11 clipboard daemon
+# (greenclip) is started by ~/.local/bin/getReady.sh instead.
+#exec --no-startup-id cliphist daemon
 bindsym $mod+v exec --no-startup-id rofi -modi "clipboard:greenclip print" -show clipboard -theme ~/.config/rofi/launchers/type-1/style-2.rasi 
 for_window [class="Gnome-pomodoro"] floating enable
 for_window [class="amberol"] floating enable
 for_window [class="Localsend"] floating enable
 # Volume Up: Mod + Scroll Up
-bindsym $mod+button4 exec --no-startup-id amixer sset Master 5%+
+# (amixer is not installed; using pactl, which works with the PipeWire/Pulse sink)
+bindsym $mod+button4 exec --no-startup-id ~/.local/bin/volume-osd.sh up
 
 # Volume Down: Mod + Scroll Down
-bindsym $mod+button5 exec --no-startup-id amixer sset Master 5%-
+bindsym $mod+button5 exec --no-startup-id ~/.local/bin/volume-osd.sh down
 
 # Power profile shortcuts
 bindsym $mod+F10 exec --no-startup-id  ~/.local/bin/Quiet.sh
@@ -223,7 +235,9 @@ bindsym $mod+z layout tabbed
 # bindsym $mod+e layout toggle split
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+# Super+Space is reserved for switching the keyboard layout (grp:win_space_toggle
+# in getReady.sh), so focus mode_toggle moved to Super+Ctrl+Space
+bindsym $mod+Ctrl+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -525,18 +539,20 @@ bindsym mod1+Shift+u exec --no-startup-id wal -i $(cat $HOME/.config/variety/wal
 
 ################# audio settings                   
 
-  bindsym XF86AudioRaiseVolume exec --no-startup-id "amixer sset Master '5%+'"
-  bindsym XF86AudioLowerVolume exec --no-startup-id "amixer sset Master '5%-'"
-  bindsym XF86AudioMute exec --no-startup-id "amixer -D pulse set Master toggle"
+  bindsym XF86AudioRaiseVolume exec --no-startup-id ~/.local/bin/volume-osd.sh up
+  bindsym XF86AudioLowerVolume exec --no-startup-id ~/.local/bin/volume-osd.sh down
+  bindsym XF86AudioMute exec --no-startup-id ~/.local/bin/volume-osd.sh mute
 
-  bindsym Pause exec --no-startup-id /usr/bin/playerctl play-pause
+  # Pause key and the media play/pause key both toggle playback (needs: playerctl)
+  bindsym Pause exec --no-startup-id playerctl play-pause
+  bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
   bindsym XF86AudioNext exec --no-startup-id playerctl next
   bindsym XF86AudioPrev exec --no-startup-id playerctl previous
   bindsym XF86AudioStop exec --no-startup-id playerctl stop
 ################# xbacklight                       
 
-  bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5% # increase screen brightness
-  bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%- # decrease screen brightness
+  bindsym XF86MonBrightnessUp exec --no-startup-id ~/.local/bin/brightness-osd.sh up # increase screen brightness
+  bindsym XF86MonBrightnessDown exec --no-startup-id ~/.local/bin/brightness-osd.sh down # decrease screen brightness
 
 ################# bar toggle                       
 

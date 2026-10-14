@@ -1,9 +1,18 @@
+-- Newer Yazi versions stringify URLs with a scheme (e.g. "file:///home/..."),
+-- which rsync misinterprets as "host:path" and tries to SSH. Convert to a plain path.
+local function to_path(url)
+	local ok, p = pcall(function() return url.path end)
+	local s = (ok and p ~= nil) and tostring(p) or tostring(url)
+	s = s:gsub('^file://', ''):gsub('^file:', '')
+	return s
+end
+
 local prepare_rsync = ya.sync(function()
 	local yanked = cx.yanked
 
 	local operation = {
 		urls = {},
-		target_dir = tostring(cx.active.current.cwd),
+		target_dir = to_path(cx.active.current.cwd),
 		is_cut_operation = yanked.is_cut,
 	}
 
@@ -12,7 +21,7 @@ local prepare_rsync = ya.sync(function()
 	end
 
 	for _, url in pairs(yanked) do
-		table.insert(operation.urls, tostring(url))
+		table.insert(operation.urls, to_path(url))
 	end
 
 	return operation
@@ -69,7 +78,7 @@ return {
 		if rsync_operation.is_cut_operation then
 			for _, url in ipairs(rsync_operation.urls) do
 				Command('rm')
-					:arg({ '-rf', tostring(url) })
+					:arg({ '-rf', url })
 					:status()
 			end
 		end

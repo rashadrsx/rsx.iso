@@ -1,6 +1,6 @@
 export ZSH=/home/rashad/.oh-my-zsh/
 
-ZSH_THEME="archcraft-dwm"
+ZSH_THEME="zsh_arch"
 
 
 
@@ -77,9 +77,37 @@ else
     builtin cd "$@" && lsd
   }
 fi
+# On-demand 16G Swap creation and activation (btrfs-safe)
+SWAPDIR=/swap
+SWAPFILE=$SWAPDIR/swapfile
 
+swap-on() {
+    if [ -f "$SWAPFILE" ]; then
+        echo "Swapfile already exists. Activating..."
+        sudo swapon "$SWAPFILE" && echo "Swap activated!"
+        return
+    fi
+    echo "Creating 16GB swapfile..."
+    # Dedicated subvolume, so snapshots of / don't block swap
+    if ! sudo btrfs subvolume show "$SWAPDIR" &>/dev/null; then
+        sudo btrfs subvolume create "$SWAPDIR" || return 1
+    fi
+    # mkswapfile handles NOCOW, no compression, preallocation, chmod 600, and mkswap
+    sudo btrfs filesystem mkswapfile --size 32g "$SWAPFILE" || return 1
+    sudo swapon "$SWAPFILE" && echo "16GB Swap activated!"
+}
 
-
+# Deactivate and remove swapfile to free disk space
+swap-off() {
+    if [ -f "$SWAPFILE" ]; then
+        echo "Deactivating and removing swapfile..."
+        sudo swapoff "$SWAPFILE" 2>/dev/null
+        sudo rm -f "$SWAPFILE"
+        echo "16GB Swap removed!"
+    else
+        echo "No $SWAPFILE found."
+    fi
+}
 export PATH="$HOME/.dotnet/tools:$PATH"
 
 alias ..='cd ..'
@@ -372,3 +400,6 @@ if [ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; th
 fi
 
 eval "$(zoxide init zsh)"
+
+# opencode
+export PATH=/home/rashad/.opencode/bin:$PATH

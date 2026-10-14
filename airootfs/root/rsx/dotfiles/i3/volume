@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# Get the current volume and mute status (from Master)
-VOLUME=$(amixer sget Master | grep -oP '\d+%' | head -n 1)
-MUTED=$(amixer sget Master | grep -oP '\[off\]')
+# Handle clicks: 1 = mute toggle, scroll up/down = volume ±5%
+# (amixer is not installed; using pactl, same as the i3 keybindings)
+case $BLOCK_BUTTON in
+    1) pactl set-sink-mute @DEFAULT_SINK@ toggle ;;
+    4) pactl set-sink-volume @DEFAULT_SINK@ +5% ;;
+    5) pactl set-sink-volume @DEFAULT_SINK@ -5% ;;
+esac
 
-# Output the formatted volume status
-if [ "$MUTED" ]; then
+VOLUME=$(pactl get-sink-volume @DEFAULT_SINK@ | awk '/Volume:/ {print $5; exit}')
+MUTED=$(pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}')
+
+if [ "$MUTED" = "yes" ]; then
     echo "♪: muted"
 else
     echo "♪: $VOLUME"

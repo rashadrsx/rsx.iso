@@ -8,6 +8,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 DOTFILES_SRC="/root/rsx/dotfiles"
+DOTFILES_LIST="/root/rsx/dotfiles.list"
 TARGET_USER=""
 TARGET_HOME=""
 
@@ -126,39 +127,31 @@ install_aur_packages() {
 deploy_dotfiles() {
     log "Deploying dotfiles to $TARGET_HOME..."
 
-    local config_dir="$TARGET_HOME/.config"
-    local project_dir="$TARGET_HOME/Projects"
-    local local_bin="$TARGET_HOME/.local/bin"
-
-    mkdir -p "$config_dir" "$local_bin"
-
-    [ -d "$DOTFILES_SRC/fish" ]      && cp -rf "$DOTFILES_SRC/fish" "$config_dir/"
-    [ -d "$DOTFILES_SRC/kitty" ]     && cp -rf "$DOTFILES_SRC/kitty" "$config_dir/"
-    [ -d "$DOTFILES_SRC/lf" ]        && cp -rf "$DOTFILES_SRC/lf" "$config_dir/"
-    [ -d "$DOTFILES_SRC/mpv" ]       && cp -rf "$DOTFILES_SRC/mpv" "$config_dir/"
-    [ -d "$DOTFILES_SRC/awesome" ]   && cp -rf "$DOTFILES_SRC/awesome" "$config_dir/"
-    [ -d "$DOTFILES_SRC/HyprLand" ]  && cp -rf "$DOTFILES_SRC/HyprLand" "$config_dir/hypr"
-    [ -d "$DOTFILES_SRC/i3" ]        && cp -rf "$DOTFILES_SRC/i3" "$config_dir/"
-    [ -d "$DOTFILES_SRC/rofi" ]      && cp -rf "$DOTFILES_SRC/rofi" "$config_dir/"
-    [ -d "$DOTFILES_SRC/fastfetch" ] && cp -rf "$DOTFILES_SRC/fastfetch" "$config_dir/"
-    [ -d "$DOTFILES_SRC/lsd" ]       && cp -rf "$DOTFILES_SRC/lsd" "$config_dir/"
-    [ -d "$DOTFILES_SRC/yazi" ]      && cp -rf "$DOTFILES_SRC/yazi" "$config_dir/"
-    [ -d "$DOTFILES_SRC/docker" ]    && cp -rf "$DOTFILES_SRC/docker" "$project_dir/"
-
-    if [ -d "$DOTFILES_SRC/bin" ]; then
-        cp -rf "$DOTFILES_SRC/bin/"* "$local_bin/"
-        chmod +x "$local_bin/"*
+    if [ ! -f "$DOTFILES_LIST" ]; then
+        err "Manifest not found: $DOTFILES_LIST"
+        return 1
     fi
 
-    [ -f "$DOTFILES_SRC/zsh/.zshrc" ]   && cp -f "$DOTFILES_SRC/zsh/.zshrc" "$TARGET_HOME/.zshrc"
-    [ -f "$DOTFILES_SRC/.gitconfig" ]    && cp -f "$DOTFILES_SRC/.gitconfig" "$TARGET_HOME/.gitconfig"
-    [ -f "$DOTFILES_SRC/.ideavimrc" ]    && cp -f "$DOTFILES_SRC/.ideavimrc" "$TARGET_HOME/.ideavimrc"
-    [ -f "$DOTFILES_SRC/.tmux.conf" ]    && cp -f "$DOTFILES_SRC/.tmux.conf" "$TARGET_HOME/.tmux.conf"
+    # Each manifest line: <live path>  <name inside dotfiles/>
+    local live name src dest
+    while read -r live name _; do
+        [[ -z "$live" || "$live" == \#* ]] && continue
+        src="$DOTFILES_SRC/$name"
+        dest="${live/#\~/$TARGET_HOME}"
 
-    if [ -f "$DOTFILES_SRC/sxhkdrc" ]; then
-        mkdir -p "$config_dir/sxhkd"
-        cp -f "$DOTFILES_SRC/sxhkdrc" "$config_dir/sxhkd/sxhkdrc"
-    fi
+        if [ -d "$src" ]; then
+            mkdir -p "$dest"
+            cp -rf "$src/." "$dest/"
+        elif [ -f "$src" ]; then
+            mkdir -p "$(dirname "$dest")"
+            cp -f "$src" "$dest"
+        else
+            continue
+        fi
+        log "  $name -> ${dest/#"$TARGET_HOME"/\~}"
+    done < "$DOTFILES_LIST"
+
+    [ -d "$TARGET_HOME/.local/bin" ] && chmod +x "$TARGET_HOME/.local/bin/"*
 
     chown -R "$TARGET_USER:$TARGET_USER" "$TARGET_HOME"
     log "Dotfiles deployed."

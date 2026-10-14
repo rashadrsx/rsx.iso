@@ -1,12 +1,16 @@
 #!/bin/bash
-# Check the LED mask to determine the active keyboard layout
-# 00000000 is US, 00001000 is ARA (5th character is 1 when second layout is active)
+# Check the active keyboard layout.
+# Preferred: xset LED mask (00000000 = US, 00001000 = ARA, 5th char is 1
+# when the second layout is active) - needs the xorg-xset package.
+# Fallback: first configured layout from setxkbmap (xset not installed).
 
-MASK=$(xset -q | awk '/LED/ {print $10}')
-
-# If the 5th character of the mask is 1, the second layout (ARA) is active
-if [[ $MASK =~ ^.{4}1 ]]; then
-    echo "AR"
+if command -v xset >/dev/null 2>&1; then
+    MASK=$(xset -q | awk '/LED/ {print $10}')
+    if [[ $MASK =~ ^.{4}1 ]]; then
+        echo "AR"
+    else
+        echo "US"
+    fi
 else
-    echo "US"
+    setxkbmap -query | awk '/^layout:/ {split($2, a, ","); print toupper(a[1])}'
 fi
